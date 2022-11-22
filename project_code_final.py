@@ -14,12 +14,14 @@ wait_time_heikin = 0
 wait_time_takeoff = 0
 wait_time_arrive = 0
 
-kankaku = int(input("何分、間隔を設けるか"))*60
+kankaku = 60
 
 G = nx.read_weighted_edgelist("dijkstra_data.txt", create_using=nx.DiGraph)
 pattern1 = pd.read_csv("project_code_final1_data.csv")
 
 def nakami():
+    global end_time
+    global end_time2
     global wait_time_heikin
     global wait_time_takeoff
     global wait_time_arrive
@@ -146,3 +148,20 @@ df_list.to_csv("project_code_final1.csv", index=False, encoding="shift_jis")
 print("平均遅延時間", wait_time_heikin/l*60, "[s]")
 print("平均出発遅延時間", wait_time_takeoff/takeoff*60, "[s]")
 print("平均到着遅延時間", wait_time_arrive/arrive*60, "[s]")
+
+
+data = []
+with open("project_code_final1.csv", encoding="shift_jis") as f:
+    reader = csv.reader(f)
+    line = [row for row in reader]
+
+pattern1 = pd.read_csv("project_code_final1.csv")
+for i in range(len(pattern1)):
+    if len(line[i+1][1]) == 0:
+        if len(line[i+1][6]) > 0:
+            data.append([line[i+1][6],line[i+1][4],line[i+1][5]])
+    else:
+        data.append([line[i+1][1],line[i+1][4],line[i+1][5]])
+        
+df_list = pd.DataFrame(data,columns=["時間","飛行機","滑走路"])
+df_list.to_csv("project_code_final1_jikokuhyo.csv", index=False, encoding="shift_jis")
